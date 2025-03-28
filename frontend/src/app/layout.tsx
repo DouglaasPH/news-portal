@@ -1,6 +1,7 @@
 import React from "react";
-import DefaultNavBar from "./nav-bar";
-import GlobalFooter from "./footer";
+import DefaultNavBar from "../components/nav-bar";
+import GlobalFooter from "../components/footer";
+import '../globals.css';
 
 // Layout padrão, para todas páginas
 export default function GlobalLayout({
