@@ -15,7 +15,6 @@ export default async function HomePage() {
 
     const response = await fetch('http://localhost:3000/api/getNewsForHomePage');
     const data = await response.json();
-    console.log(data);
 
     return (
         <main className='pl-10 pr-10 pt-[1vw]'>

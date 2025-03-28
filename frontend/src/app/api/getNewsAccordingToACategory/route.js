@@ -8,6 +8,7 @@ export async function GET(req, res) {
 
   try {
     const [rows] = await pool.execute(`SELECT * FROM materias WHERE categoria_id = ?`, [id]);
+    console.log(id);
     return NextResponse.json(rows);
   } catch (error) {
     console.log(error);
