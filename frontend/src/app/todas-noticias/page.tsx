@@ -66,17 +66,10 @@ export default function TodasPaginasPage() {
         }
     }, [categoriaSelecionada]); // O useEffect será executado toda vez que a categoriaSelecionada mudar
 
-    // Redireciona o usuário para a página da notícia correspondente, usando o slug gerado
-    // A URL gerada será baseada no título da notícia selecionada, permitindo uma navegação dinâmica
-    function redirectToNewsPage(title: string) {
-        // Converte o título da notícia selecionada pelo usuário em um slug válido para ser usado na URL
-        // Exemplo: "Lorem ipsum dolor sit amet" -> "lorem-ipsum-dolor-sit-amet"
-        const slug = title
-            .toLowerCase()
-            .replace(/[\s,]+/g, "-") // Substitui espaços e vírgulas por "-"
-            .replace(/[^\w-]/g, ""); // Remove caracteres especiais
-
-        const path = '/noticia/' + slug;
+    // Redireciona o usuário para a página da notícia correspondente, usando o id da notícia
+    // A URL gerada será baseada no id da notícia selecionada, permitindo uma navegação dinâmica
+    function redirectToNewsPage(id: number) {
+        const path = '/noticia/' + id;
         router.push(path);
     }        
 
@@ -107,7 +100,7 @@ export default function TodasPaginasPage() {
                 style={{ height: (todasCategoriasData.length / 4) * 15 + 'vw' }}
             >
                 {todasNoticiasData.map((materia: { id: number; titulo: string; conteudo: string; data_publicacao: string; nome: string; }) => (
-                    <div key={materia.id} className='w-[22vw] h-[20.7vw] sm:flex sm:flex-col md:justify-between md:cursor-pointer' onClick={() => redirectToNewsPage(materia.titulo)}>
+                    <div key={materia.id} className='w-[22vw] h-[20.7vw] sm:flex sm:flex-col md:justify-between md:cursor-pointer' onClick={() => redirectToNewsPage(materia.id)}>
                         <Image
                             src={imageUrl}
                             alt="Imagem aleatória"

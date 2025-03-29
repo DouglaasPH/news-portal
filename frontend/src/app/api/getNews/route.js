@@ -7,8 +7,8 @@ export async function GET(req, res) {
   const id = url.searchParams.get('id'); // Acessa o parâmetro id na URL
 
   try {
-    const [rows] = await pool.execute(`SELECT * FROM materias WHERE id = ?`, [id]);
-    console.log(rows);
+    const [rows] = await pool.execute(`SELECT materias.titulo, materias.conteudo, materias.data_publicacao, autores.nome AS autor_nome, categorias.nome AS categoria_nome FROM materias JOIN autores ON materias.autor_id = autores.id JOIN categorias ON materias.categoria_id = categorias.id WHERE materias.id = ?;`, [id]);
+
     return NextResponse.json(rows);
   } catch (error) {
     console.log(error);
