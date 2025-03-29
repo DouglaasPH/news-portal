@@ -1,4 +1,8 @@
+'use client';
+
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const formatDate = (isoString: string) => {
   const date = new Date(isoString);
@@ -9,12 +13,36 @@ const formatDate = (isoString: string) => {
   }).format(date);
 };
 
-export default async function HomePage() {
+export default function HomePage() {
+    const router = useRouter();
     const imageUrl = `https://picsum.photos/900/500`;
     const imageUrlMenor = `https://picsum.photos/400/250`;    
 
-    const response = await fetch('http://localhost:3000/api/getNewsForHomePage');
-    const data = await response.json();
+    const [data, setData] = useState([]);
+
+    // Carregar os dados da API de notícias
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch('http://localhost:3000/api/getNewsForHomePage');
+            const data = await response.json();
+            setData(data); // Atualiza o estado com os dados recebidos
+        };
+        fetchData(); // Chama a função de fetch
+    }, []); // Executa apenas uma vez após o primeiro render
+
+    // Redireciona o usuário para a página da notícia correspondente, usando o slug gerado
+    // A URL gerada será baseada no título da notícia selecionada, permitindo uma navegação dinâmica
+    function redirectToNewsPage(title: string) {
+        // Converte o título da notícia selecionada pelo usuário em um slug válido para ser usado na URL
+        // Exemplo: "Lorem ipsum dolor sit amet" -> "lorem-ipsum-dolor-sit-amet"
+        const slug = title
+            .toLowerCase()
+            .replace(/[\s,]+/g, "-") // Substitui espaços e vírgulas por "-"
+            .replace(/[^\w-]/g, ""); // Remove caracteres especiais
+
+        const path = '/noticia/' + slug;
+        router.push(path);
+    }    
 
     return (
         <main className='pl-10 pr-10 pt-[1vw]'>
@@ -53,7 +81,7 @@ export default async function HomePage() {
                 <div className='h-[50vw] sm:flex sm:flex-row flex-wrap gap-[1vw] md:justify-between'>
                     {/* div  para informações da matéria, como: Título, Data de emissão e nome do reportér */}                
                     {data.map((materia: { id: number; titulo: string; conteudo: string; data_publicacao: string; nome: string; }) => (
-                        <div key={materia.id} className='w-[22vw] h-[20.7vw] sm:flex sm:flex-col md:justify-between md:cursor-pointer'>
+                        <div key={materia.id} className='w-[22vw] h-[20.7vw] sm:flex sm:flex-col md:justify-between md:cursor-pointer' onClick={() => redirectToNewsPage(materia.titulo)}>
                             <Image
                                 src={imageUrlMenor}
                                 alt="Imagem aleatória"

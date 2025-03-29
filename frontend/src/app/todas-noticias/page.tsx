@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // Função para formatar a data/hora recebida do banco de dados
 const formatDate = (isoString: string) => {
@@ -13,6 +14,7 @@ const formatDate = (isoString: string) => {
 };
 
 export default function TodasPaginasPage() {
+    const router = useRouter();
     const [todasNoticiasData, setTodasNoticiasData] = useState([]);
     const [todasCategoriasData, setTodasCategoriasData] = useState([]);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
@@ -64,6 +66,20 @@ export default function TodasPaginasPage() {
         }
     }, [categoriaSelecionada]); // O useEffect será executado toda vez que a categoriaSelecionada mudar
 
+    // Redireciona o usuário para a página da notícia correspondente, usando o slug gerado
+    // A URL gerada será baseada no título da notícia selecionada, permitindo uma navegação dinâmica
+    function redirectToNewsPage(title: string) {
+        // Converte o título da notícia selecionada pelo usuário em um slug válido para ser usado na URL
+        // Exemplo: "Lorem ipsum dolor sit amet" -> "lorem-ipsum-dolor-sit-amet"
+        const slug = title
+            .toLowerCase()
+            .replace(/[\s,]+/g, "-") // Substitui espaços e vírgulas por "-"
+            .replace(/[^\w-]/g, ""); // Remove caracteres especiais
+
+        const path = '/noticia/' + slug;
+        router.push(path);
+    }        
+
     return (
         <main className='pl-10 pr-10 pt-[1vw] h-[95vw] sm:flex sm:flex-col md:justify-between'>
             <h1 className='text-black text-3xl sm:text-5xl md:text-6xl lg:text-4xl font-bold'>Categorias de busca</h1>            
@@ -91,7 +107,7 @@ export default function TodasPaginasPage() {
                 style={{ height: (todasCategoriasData.length / 4) * 15 + 'vw' }}
             >
                 {todasNoticiasData.map((materia: { id: number; titulo: string; conteudo: string; data_publicacao: string; nome: string; }) => (
-                    <div key={materia.id} className='w-[22vw] h-[20.7vw] sm:flex sm:flex-col md:justify-between md:cursor-pointer'>
+                    <div key={materia.id} className='w-[22vw] h-[20.7vw] sm:flex sm:flex-col md:justify-between md:cursor-pointer' onClick={() => redirectToNewsPage(materia.titulo)}>
                         <Image
                             src={imageUrl}
                             alt="Imagem aleatória"
