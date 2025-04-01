@@ -4,7 +4,7 @@ O projeto "portal-news" visa o desenvolvimento de uma plataforma de notícias si
 
 ## 🚀 Funcionalidades
 
-- **Página Inicial Responsiva** --
+- **Página Inicial Responsiva** -
 Apresenta um layout flexível e adaptável para diferentes tamanhos de tela, garantindo uma experiência de navegação fluída em dispositivos móveis e desktop.
 
 - **Exibição de Notícias** -
