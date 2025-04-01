@@ -13,7 +13,7 @@ export default function GlobalLayout({
         <html lang="pt-br">
             <body>
                 <DefaultNavBar/>
-                <main>{children}</main>
+                <main className="bg-[#ebebeb]">{children}</main>
                 <GlobalFooter/>
             </body>
         </html>
