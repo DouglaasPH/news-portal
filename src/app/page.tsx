@@ -113,26 +113,21 @@ export default function HomePage() {
             </div>
 
 
-
             {/* div  para últimas notícias. Elementos filho: Título e div pai para todas as informações */}
-            <div className='h-[1200px] sm:h-[1300px] md:h-[1500px] lg:h-[700px] xl:h-[750px] flex flex-col gap-[40px]'>
-                <h2 className='text-black text-3xl sm:text-4xl md:text-4xl lg:text-4xl font-bold'>Últimas notícias</h2>
-            {/* div  para imagem e informações da matéria */ }
-                <div className='h-[1100px] sm:h-[1200px] md:h-[1400px] lg:h-[580px] xl:h-[650px] flex flex-row flex-wrap justify-between'>
-                    {/* div  para informações da matéria, como: Título, Data de emissão e nome do reportér */}                
-                    {data.map((materia: { id: number; titulo: string; conteudo: string; data_publicacao: string; nome: string; }) => (
-                        <div key={materia.id} className='h-[220px] sm:h-[240px] md:h-[260px] lg:h-[250px] xl:h-[270px] flex flex-col justify-between cursor-pointer' style={{ width: updatePositionForSecondDiv() }} onClick={() => redirectToNewsPage(materia.id)}>
-                            <Image
-                                src={imageUrlMenor}
-                                alt="Imagem aleatória"
-                                width={400}
-                                height={250}   
-                                className='cursor-pointer'
-                            />
-                            <h3 className='text-[16px] sm:text-[17px] md:text-[18px] lg:text-[19px] xl:text-[21px] font-medium leading-none'>{materia.titulo}</h3>
-                            <div className='flex flex-col gap-[5px] h-[50px]'>
-                                <p className='text-[9px] sm:text-[11px] md:text-[13px] lg:text-[13px] xl:text-[13px] font-light sm:text-gray-900'>{materia.nome}</p>
-                                <p className='text-[9px] sm:text-[11px] md:text-[13px] lg:text-[13px] xl:text-[13px] font-light leading-tight sm:text-gray-900'>{formatDate(materia.data_publicacao)}</p>
+            <div className='flex flex-col gap-10 mb-20'>
+                <h2 className='text-black text-3xl font-bold'>Últimas notícias</h2>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full'>
+                    {data.map(({ id, titulo, data_publicacao, nome }) => (
+                        <div key={id} className='w-full flex flex-col bg-white shadow-md rounded-lg overflow-hidden cursor-pointer' onClick={() => redirectToNewsPage(id)}>
+                            <div className='w-full h-60 relative'>
+                                <Image src={`https://picsum.photos/800/400`} alt='Imagem aleatória' layout='fill' objectFit='cover' />
+                            </div>
+                            <div className='p-4'>
+                                <h3 className='text-lg font-medium leading-none'>{titulo}</h3>
+                                <div className='flex flex-col gap-1 text-gray-700 mt-2'>
+                                    <p className='text-xs font-light'>{nome}</p>
+                                    <p className='text-xs font-light'>{formatDate(data_publicacao)}</p>
+                                </div>
                             </div>
                         </div>
                     ))}

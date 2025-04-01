@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-// Função para formatar a data/hora recebida do banco de dados
 const formatDate = (isoString: string) => {
   const date = new Date(isoString);
   return new Intl.DateTimeFormat('pt-BR', {
@@ -14,108 +13,90 @@ const formatDate = (isoString: string) => {
 };
 
 export default function TodasPaginasPage() {
-    const router = useRouter();
-    const [todasNoticiasData, setTodasNoticiasData] = useState([]);
-    const [todasCategoriasData, setTodasCategoriasData] = useState([]);
-    const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
+  const router = useRouter();
+  const [todasNoticiasData, setTodasNoticiasData] = useState([]);
+  const [todasCategoriasData, setTodasCategoriasData] = useState([]);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
 
-    const imageUrl = `https://picsum.photos/400/250`;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [noticiasRes, categoriasRes] = await Promise.all([
+          fetch('http://localhost:3000/api/getAllNews'),
+          fetch('http://localhost:3000/api/getAllCategories'),
+        ]);
 
-    // Carregar as notícias e categorias após o componente ser montado
-    useEffect(() => {
-        const fetchData = async () => {
-            const noticiasResponse = await fetch('http://localhost:3000/api/getAllNews');
-            const noticiasData = await noticiasResponse.json();
-            setTodasNoticiasData(noticiasData);
+        const noticiasData = await noticiasRes.json();
+        const categoriasData = await categoriasRes.json();
 
-            const categoriasResponse = await fetch('http://localhost:3000/api/getAllCategories');
-            const categoriasData = await categoriasResponse.json();
-            setTodasCategoriasData(categoriasData);
-        };
+        setTodasNoticiasData(noticiasData);
+        setTodasCategoriasData(categoriasData);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-        fetchData();
-    }, []); // O array vazio garante que o fetch seja executado uma vez após o primeiro render
+  useEffect(() => {
+    const fetchNewsByCategory = async () => {
+      try {
+        const url = categoriaSelecionada
+          ? `http://localhost:3000/api/getNewsAccordingToACategory?id=${categoriaSelecionada}`
+          : 'http://localhost:3000/api/getAllNews';
 
-    // Função para marcar/desmarcar categoria
-    function categoriaClick(categoria_id: number) {
-        if (categoria_id !== Number(categoriaSelecionada)) setCategoriaSelecionada(String(categoria_id))
-        else setCategoriaSelecionada('');
-    }
+        const response = await fetch(url);
+        const noticiasData = await response.json();
+        setTodasNoticiasData(noticiasData);
+      } catch (error) {
+        console.error("Erro ao buscar notícias:", error);
+      }
+    };
+    fetchNewsByCategory();
+  }, [categoriaSelecionada]);
 
-    // Buscar novas notícias com base na categoria selecionada
-    useEffect(() => {
-        if (categoriaSelecionada) {
-            const fetchNewsByCategory = async () => {
-                const noticiasResponse = await fetch(`http://localhost:3000/api/getNewsAccordingToACategory?id=${categoriaSelecionada}`);
-                const noticiasData = await noticiasResponse.json();
-                console.log(noticiasData);
-                setTodasNoticiasData(noticiasData);
-            };
+  const categoriaClick = (categoria_id: number) => {
+    setCategoriaSelecionada(prev => (prev === String(categoria_id) ? '' : String(categoria_id)));
+  };
 
-            fetchNewsByCategory();
-        } else {
-            // Se nenhuma categoria estiver selecionada, recarregar todas as notícias
-            const fetchAllNews = async () => {
-                const noticiasResponse = await fetch('http://localhost:3000/api/getAllNews');
-                const noticiasData = await noticiasResponse.json();
-                console.log(noticiasData);
-                setTodasNoticiasData(noticiasData);
-            };
+  const redirectToNewsPage = (id: number) => {
+    router.push(`/noticia/${id}`);
+  };
 
-            fetchAllNews();
-        }
-    }, [categoriaSelecionada]); // O useEffect será executado toda vez que a categoriaSelecionada mudar
+  return (
+    <main className="px-10 pt-[1vw] h-auto flex flex-col">
+      <h1 className="text-black text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">Categorias de busca</h1>
+      <div className="flex flex-wrap gap-2 mb-10">
+        {todasCategoriasData.map(({ id, nome }: { id: number; nome: string }) => (
+          <button
+            key={id}
+            className={`border-2 px-3 py-1 rounded-md text-sm shadow-gray-400 transition-all duration-200 ${
+              Number(categoriaSelecionada) === id ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300'
+            }`}
+            onClick={() => categoriaClick(id)}
+          >
+            {nome}
+          </button>
+        ))}
+      </div>
 
-    // Redireciona o usuário para a página da notícia correspondente, usando o id da notícia
-    // A URL gerada será baseada no id da notícia selecionada, permitindo uma navegação dinâmica
-    function redirectToNewsPage(id: number) {
-        const path = '/noticia/' + id;
-        router.push(path);
-    }        
-
-    return (
-        <main className='pl-10 pr-10 pt-[1vw] h-[95vw] sm:flex sm:flex-col md:justify-between'>
-            <h1 className='text-black text-3xl sm:text-5xl md:text-6xl lg:text-4xl font-bold'>Categorias de busca</h1>            
-
-            {/* div para exibir todas as categorias disponíveis */}
-            <div className="h-[6vw] sm:flex sm:flex-row flex-wrap gap-[1vw]" >
-                {/* Iterar sobre a API de todas categorias de notícia  */}
-                {todasCategoriasData.map((categoria: { id: number; nome: string }) => (
-                    <button
-                        key={categoria.id}
-                        className="border-2 pt-1 pb-1 pl-2 pr-2 rounded-md text-black text-sm sm:text-sm md:text-sm lg:text-sm shadow shadow-gray-400"
-                        style={{ backgroundColor: Number(categoriaSelecionada) === categoria.id ? 'black' : 'white', color: Number(categoriaSelecionada) === categoria.id ? 'white' : 'black', borderColor: Number(categoriaSelecionada) === categoria.id ? 'black' : undefined }}
-                        onClick={() => categoriaClick(categoria.id)}
-                    >
-                        {categoria.nome}
-                    </button>
-                ))}                
+      <h1 className="text-black text-2xl sm:text-3xl lg:text-4xl font-bold mb-5">Todas Notícias</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mb-20">
+        {todasNoticiasData.map(({ id, titulo, data_publicacao, nome }) => (
+          <div key={id} className="w-full flex flex-col bg-white shadow-md rounded-lg overflow-hidden cursor-pointer" onClick={() => redirectToNewsPage(id)}>
+            <div className="w-full h-60 relative">
+              <Image src={`https://picsum.photos/800/400`} alt="Imagem aleatória" layout="fill" objectFit="cover" className="w-full h-full" />
             </div>
-
-            <h1 className='text-black text-3xl sm:text-5xl md:text-6xl lg:text-3xl font-bold'>Todas Notícias</h1>
-
-            {/* div para exibir todas as últimas notícias */}
-            <div 
-                className='sm:flex sm:flex-row flex-wrap gap-[1.6vw]' 
-                style={{ height: (todasCategoriasData.length / 4) * 15 + 'vw' }}
-            >
-                {todasNoticiasData.map((materia: { id: number; titulo: string; conteudo: string; data_publicacao: string; nome: string; }) => (
-                    <div key={materia.id} className='w-[22vw] h-[20.7vw] sm:flex sm:flex-col md:justify-between md:cursor-pointer' onClick={() => redirectToNewsPage(materia.id)}>
-                        <Image
-                            src={imageUrl}
-                            alt="Imagem aleatória"
-                            width={400}
-                            height={250}   
-                            className='md:rounded-lg shadow-sm shadow-black'
-                        />
-                        <h3 className='text-lg sm:font-medium leading-none'>{materia.titulo}</h3>
-                        <div className='sm:flex sm:flex-col md:justify-between h-[3vw]'>
-                            <p className='font-light sm:text-gray-900'>{materia.nome}</p>
-                            <p className='font-light sm:text-gray-900'>{formatDate(materia.data_publicacao)}</p>
-                        </div>
-                    </div>
-                ))}                
+            <div className="p-4">
+              <h3 className="text-lg font-medium leading-none">{titulo}</h3>
+              <div className="flex flex-col gap-1 text-gray-700 mt-2">
+                <p className="text-xs font-light">{nome}</p>
+                <p className="text-xs font-light">{formatDate(data_publicacao)}</p>
+              </div>
             </div>
-        </main>
-    );
+          </div>
+        ))}
+      </div>
+    </main>
+  );
 }
