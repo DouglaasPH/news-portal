@@ -132,7 +132,6 @@ CREATE TABLE materias(
     "data_publicacao": "data no formato: 2025-03-26T05:14:57.000Z",
     "nome": "nome do jornalista/autor da matéria",
   }
-  ...
 ]
 ```
 
@@ -149,7 +148,6 @@ CREATE TABLE materias(
     "data_publicacao": "data no formato: 2025-03-26T05:14:57.000Z",
     "nome": "nome do jornalista/autor da matéria",
   }
-  ...
 ]
 ```
 
