@@ -4,25 +4,25 @@ O projeto "portal-news" visa o desenvolvimento de uma plataforma de notícias si
 
 ## 🚀 Funcionalidades
 
-- Página Inicial Responsiva -
+- **Página Inicial Responsiva** --
 Apresenta um layout flexível e adaptável para diferentes tamanhos de tela, garantindo uma experiência de navegação fluída em dispositivos móveis e desktop.
 
-- Exibição de Notícias -
+- **Exibição de Notícias** -
 Exibe notícias categorizadas por data e relevância, com título, resumo e imagem destacada, organizadas de maneira atraente e intuitiva.
 
-- Redirecionamento para Página de Detalhes -
+- **Redirecionamento para Página de Detalhes** -
 Permite ao usuário clicar em qualquer notícia para visualizar o conteúdo completo na página de detalhes, incluindo informações adicionais e imagens.
 
-- Sistema de Busca -
+- **Sistema de Busca** -
 Funcionalidade de pesquisa para que os usuários encontrem rapidamente notícias específicas, por palavras-chave ou categorias.
 
-- Ajustes de Responsividade -
+- **Ajustes de Responsividade** -
 Garantia de uma navegação otimizada em qualquer dispositivo, com ajustes automáticos de layout e funcionalidade conforme a tela do usuário.
 
-- Integração com APIs de Notícias -
+- **Integração com APIs de Notícias** -
 Capacidade de integrar-se com fontes externas para exibir notícias atualizadas de outras plataformas, garantindo diversidade de conteúdo.
 
-- Acessibilidade e Usabilidade -
+- **Acessibilidade e Usabilidade** -
 Interface projetada com foco na acessibilidade, garantindo uma experiência inclusiva para todos os usuários, independentemente de suas necessidades especiais
 
 ## 🛠 Tecnologias Utilizadas
